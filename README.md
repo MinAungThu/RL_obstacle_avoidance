@@ -54,7 +54,7 @@ convergence to that same threshold in the first place.
 </tr>
 </table>
 
-
+Failure
 
 <p align="center">
   <img src="assets/sac_failure.gif" width="400" alt="SAC colliding with the obstacle">

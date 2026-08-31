@@ -1,10 +1,9 @@
 # Learning-Based Motion Planning for the UR5e
 
-**Reinforcement learning vs. classical sampling-based planning, on the same robot.**
+**Reinforcement learning vs. classical sampling-based planning on the same robot.**
 
-A Universal Robots UR5e (official DeepMind MuJoCo Menagerie model) learns to reach a target while
-avoiding an obstacle using Soft Actor-Critic (SAC), then gets benchmarked against RRT*, a classical
-motion planner, on 100 identical scenes. Every number below is measured, not assumed.
+I am interested in motion-planning of robots as well as the performance of RL vs classical planning algorithms. Hence, I started this project. Here, a Universal Robots UR5e (official DeepMind MuJoCo Menagerie model) learns to reach a target while avoiding an obstacle using Soft Actor-Critic (SAC). Afterwards, it gets benchmarked against RRT*, a classical
+motion planner, on 100 identical scenes. 
 
 <p align="center">
   <img src="assets/sac_vs_rrt_star.gif" width="640" alt="SAC (left) vs RRT* (right) reaching the same target around the same obstacle">
@@ -16,17 +15,14 @@ motion planner, on 100 identical scenes. Every number below is measured, not ass
 
 ## Why this exists
 
-Sampling-based planners like RRT* are the classical answer to robot motion planning: give them a
-start, a goal, and a collision checker, and they'll find a provably valid path online, with no
-training required. Reinforcement learning takes a different bet: pay an expensive training cost
-once, offline, and get a policy that reacts in milliseconds afterward. For a 6-DOF arm reaching
+Sampling-based planners like RRT* are the classical answer to robot motion planning with no
+training required. Reinforcement learning takes a different approach, goes through a training pipeline and get a policy that reacts in milliseconds afterward. For a 6-DOF arm reaching
 around a single obstacle, how do these two actually compare? This project answers that question.
 
 ## Results
 
 100 identical scenes: same seed, same start configuration, same target, same obstacle for both
-methods. Full methodology and the caveats behind these numbers are in
-[`docs/development_log.md`](docs/development_log.md).
+methods. 
 
 <p align="center">
   <img src="assets/benchmark_comparison.png" width="720" alt="Bar charts comparing SAC and RRT* on success rate, time to solution, path length, and smoothness">
@@ -42,18 +38,14 @@ methods. Full methodology and the caveats behind these numbers are in
 | **Final distance to target** (successes) | 0.019 m | 0.045 m |
 
 Success rates land close, within 4 points, but the two methods fail differently. RRT*'s failures
-are almost entirely a weak link earlier in the pipeline: the inverse-kinematics step finds an
-end-effector position that reaches the target but puts another arm link through the obstacle. Once
-IK hands it a valid goal, RRT* essentially never times out. SAC's failures split between real
-collisions and running out of episode time.
+are almost entirely a weak link earlier in the pipeline, the inverse-kinematics step finds an
+end-effector position that reaches the target but puts another arm link through the obstacle.
 
-SAC's learned policy also produces a shorter, roughly 3x smoother path on average, plausibly
-because it isn't tied to whichever redundant-DOF configuration IK happened to converge to. RRT*
+SAC's learned policy also produces a shorter, roughly 3x smoother path on average. RRT*
 lands closer to the target when it succeeds, which tracks with its goal being defined by IK
 convergence to that same threshold in the first place.
 
-The time-to-solution gap, about 2,500x, is the RL-vs-planning trade-off in one number: SAC pays
-its cost once, offline, during training. RRT* pays a real cost every time it's asked to plan.
+
 
 <table>
 <tr>
@@ -62,7 +54,7 @@ its cost once, offline, during training. RRT* pays a real cost every time it's a
 </tr>
 </table>
 
-Failures are shown too. This is a real SAC episode colliding with the obstacle, not staged:
+
 
 <p align="center">
   <img src="assets/sac_failure.gif" width="400" alt="SAC colliding with the obstacle">

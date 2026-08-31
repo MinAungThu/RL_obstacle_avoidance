@@ -100,59 +100,7 @@ The benchmark (`scripts/benchmark.py`) runs both methods on N identical, indepen
 reproducible scenes and computes success rate, time-to-solution, path length, smoothness, and
 failure breakdowns with the same formulas for both, so the numbers are actually comparable.
 
-## Quickstart
 
-Trained checkpoints aren't included in this repo (kept lean, code-only); train one first, then
-point the benchmark/visualization scripts at it.
-
-```bash
-git clone <this-repo>
-cd ur5e-motion-planning
-
-python3 -m venv --system-site-packages .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-# fetch the official UR5e model
-scripts/setup_menagerie.sh
-
-# confirm everything works
-python -m pytest tests/ -v
-
-# quick smoke check (~2 min): confirms the whole pipeline runs end to end
-python -m training.train_sac --config configs/default.yaml --seed 0 --timesteps 10000 --run-name smoke_test
-
-# train for real (this is what produced the numbers above -- expect several
-# hours on a laptop CPU)
-python -m training.train_sac --config configs/default.yaml --seed 0 --timesteps 1200000 --run-name obstacle
-```
-
-Once trained, reproduce the benchmark and visuals against your own checkpoint:
-
-```bash
-python scripts/benchmark.py --model experiments/sac/obstacle/seed_0/model.zip \
-    --episodes 100 --run-name my_benchmark
-
-python scripts/visualize.py --model experiments/sac/obstacle/seed_0/model.zip \
-    --tb-run runs/sac/obstacle/seed_0 --success-seed 500000 --failure-seed 500006
-```
-
-(`--success-seed`/`--failure-seed` should come from your own `my_benchmark/results.csv` — a
-freshly trained policy won't necessarily succeed/fail on the exact same seeds this one did.)
-
-## Project structure
-
-```
-env/            Gymnasium environment, MuJoCo scene generation, collision checking
-planning/       RRT, RRT*, inverse kinematics, shared path-metric utilities
-training/       SAC training CLI
-evaluation/     Standalone checkpoint evaluation (success rate, collisions, path metrics, timing)
-scripts/        Benchmark, visualization, robot/workspace inspection, one-off setup
-configs/        YAML configs (environment, reward, RL hyperparameters, planner, benchmark)
-tests/          pytest suite (48 tests covering env, obstacles, planning, IK, path metrics)
-experiments/    Trained checkpoints, evaluation results, benchmark outputs (gitignored)
-docs/           Full development log with phase-by-phase results and every bug found along the way
-```
 
 ## Limitations
 

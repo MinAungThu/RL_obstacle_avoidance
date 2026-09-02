@@ -11,18 +11,11 @@ motion planner, on 100 identical scenes.
   <em>SAC (left) vs RRT* (right). Same start, same target, same obstacle.</em>
 </p>
 
----
 
-## Why this exists
-
-Sampling-based planners like RRT* are the classical answer to robot motion planning with no
-training required. Reinforcement learning takes a different approach, goes through a training pipeline and get a policy that reacts in milliseconds afterward. For a 6-DOF arm reaching
-around a single obstacle, how do these two actually compare? This project answers that question.
 
 ## Results
 
-100 identical scenes: same seed, same start configuration, same target, same obstacle for both
-methods. 
+
 
 <p align="center">
   <img src="assets/benchmark_comparison.png" width="720" alt="Bar charts comparing SAC and RRT* on success rate, time to solution, path length, and smoothness">
@@ -37,13 +30,6 @@ methods.
 | **Smoothness** (successes) | 0.0062 | 0.0021 |
 | **Final distance to target** (successes) | 0.019 m | 0.045 m |
 
-Success rates land close, within 4 points, but the two methods fail differently. RRT*'s failures
-are almost entirely a weak link earlier in the pipeline, the inverse-kinematics step finds an
-end-effector position that reaches the target but puts another arm link through the obstacle.
-
-SAC's learned policy also produces a shorter, roughly 3x smoother path on average. RRT*
-lands closer to the target when it succeeds, which tracks with its goal being defined by IK
-convergence to that same threshold in the first place.
 
 
 
